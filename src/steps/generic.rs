@@ -479,14 +479,6 @@ pub fn run_ghcup_update(ctx: &ExecutionContext) -> Result<()> {
 }
 
 pub fn run_tlmgr_update(ctx: &ExecutionContext) -> Result<()> {
-    cfg_if::cfg_if! {
-        if #[cfg(any(target_os = "linux", target_os = "android"))] {
-            if !ctx.config().enable_tlmgr_linux() {
-                return Err(SkipStep(String::from("tlmgr must be explicity enabled in the configuration to run in Android/Linux")).into());
-            }
-        }
-    }
-
     let tlmgr = require("tlmgr")?;
     let kpsewhich = require("kpsewhich")?;
     let tlmgr_directory = {
@@ -501,6 +493,14 @@ pub fn run_tlmgr_update(ctx: &ExecutionContext) -> Result<()> {
         d
     }
     .require()?;
+
+    cfg_if::cfg_if! {
+        if #[cfg(any(target_os = "linux", target_os = "android"))] {
+            if !ctx.config().enable_tlmgr_linux() {
+                return Err(SkipStep(String::from("tlmgr must be explicity enabled in the configuration to run in Android/Linux")).into());
+            }
+        }
+    }
 
     let directory_writable = tempfile_in(&tlmgr_directory).is_ok();
     debug!("{:?} writable: {}", tlmgr_directory, directory_writable);

@@ -177,6 +177,7 @@ impl Terminal {
                     StepResult::Success => format!("{}", style("OK").bold().green()),
                     StepResult::Failure => format!("{}", style("FAILED").bold().red()),
                     StepResult::Ignored => format!("{}", style("IGNORED").bold().yellow()),
+                    StepResult::NotInstalled => format!("{}", style("NOT INSTALLED").bold().black()),
                     StepResult::Skipped(reason) => format!("{}: {}", style("SKIPPED").bold().blue(), reason),
                 }
             ))

@@ -35,6 +35,10 @@ pub struct DryRun();
 #[error("{0}")]
 pub struct SkipStep(pub String);
 
+#[derive(Error, Debug)]
+#[error("Step is not installed")]
+pub struct NotInstalled;
+
 #[cfg(all(windows, feature = "self-update"))]
 #[derive(Error, Debug)]
 #[error("Topgrade Upgraded")]

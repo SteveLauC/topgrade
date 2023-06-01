@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use color_eyre::eyre::Result;
 use tracing::{debug, error};
 
-use crate::error::SkipStep;
+use crate::error::{NotInstalled, SkipStep};
 
 pub trait PathExt
 where
@@ -42,7 +42,7 @@ where
             debug!("Path {:?} exists", self.as_ref());
             Ok(self)
         } else {
-            Err(SkipStep(format!("Path {:?} doesn't exist", self.as_ref())).into())
+            Err(NotInstalled.into())
         }
     }
 }
@@ -83,9 +83,7 @@ pub fn require<T: AsRef<OsStr> + Debug>(binary_name: T) -> Result<PathBuf> {
             Ok(path)
         }
         Err(e) => match e {
-            which_crate::Error::CannotFindBinaryPath => {
-                Err(SkipStep(format!("Cannot find {:?} in PATH", &binary_name)).into())
-            }
+            which_crate::Error::CannotFindBinaryPath => Err(NotInstalled.into()),
             _ => {
                 panic!("Detecting {:?} failed: {}", &binary_name, e);
             }

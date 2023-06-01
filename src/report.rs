@@ -3,6 +3,7 @@ use std::borrow::Cow;
 pub enum StepResult {
     Success,
     Failure,
+    NotInstalled,
     Ignored,
     Skipped(String),
 }
@@ -10,7 +11,7 @@ pub enum StepResult {
 impl StepResult {
     pub fn failed(&self) -> bool {
         match self {
-            StepResult::Success | StepResult::Ignored | StepResult::Skipped(_) => false,
+            StepResult::Success | StepResult::Ignored | StepResult::NotInstalled | StepResult::Skipped(_) => false,
             StepResult::Failure => true,
         }
     }

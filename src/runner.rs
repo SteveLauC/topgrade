@@ -1,5 +1,5 @@
 use crate::ctrlc;
-use crate::error::{DryRun, SkipStep};
+use crate::error::{DryRun, NotInstalled, SkipStep};
 use crate::execution_context::ExecutionContext;
 use crate::report::{Report, StepResult};
 use crate::terminal::print_error;
@@ -44,6 +44,12 @@ impl<'a> Runner<'a> {
                 Err(e) if e.downcast_ref::<SkipStep>().is_some() => {
                     if self.ctx.config().verbose() || self.ctx.config().show_skipped() {
                         self.report.push_result(Some((key, StepResult::Skipped(e.to_string()))));
+                    }
+                    break;
+                }
+                Err(e) if e.downcast_ref::<NotInstalled>().is_some() => {
+                    if self.ctx.config().verbose() || self.ctx.config().show_skipped() {
+                        self.report.push_result(Some((key, StepResult::NotInstalled)));
                     }
                     break;
                 }
